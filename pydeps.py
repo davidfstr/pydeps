@@ -44,16 +44,26 @@ def main(args):
         from pprint import pprint
         pprint(dict(module_name_2_deps))
     
+    edge_2_weight = OrderedDict()
+    for (module_name, deps) in module_name_2_deps.iteritems():
+        for dep in deps:
+            is_system_dep = dep not in module_name_2_deps
+            if not is_system_dep:
+                edge = (module_name, dep)
+                
+                if edge not in edge_2_weight:
+                    edge_2_weight[edge] = 1
+                else:
+                    edge_2_weight[edge] += 1
+    
     with open(output_dot_file_filepath, 'wb') as output:
         print >> output, 'digraph "Module Dependencies" {'
         print >> output, '    graph [rankdir=LR]'
         print >> output, '    '
         
-        for (module_name, deps) in module_name_2_deps.iteritems():
-            for dep in deps:
-                is_system_dep = dep not in module_name_2_deps
-                if not is_system_dep:
-                    print >> output, '    "%s" -> "%s"' % (module_name, dep)
+        for (edge, weight) in edge_2_weight.iteritems():
+            (module_name, dep) = edge
+            print >> output, '    "%s" -> "%s" [penwidth=%d]' % (module_name, dep, weight)
         
         print >> output, '}'
 
