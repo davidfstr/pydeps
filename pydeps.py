@@ -15,6 +15,8 @@ import re
 import sys
 
 
+VERBOSE = False
+
 IMPORT_RE = re.compile(r'^import ([a-zA-Z_.]+)')
 FROM_IMPORT_RE = re.compile(r'^from ([a-zA-Z_.]+) import ([a-zA-Z_.]+)')
 
@@ -32,11 +34,15 @@ def main(args):
                 
                 module_name = filepath_relative_to_source_directory
                 module_name = module_name[:-len('.py')]
-                module_name.replace(os.sep, '.')
+                module_name = module_name.replace(os.sep, '.')
                 
                 deps = read_dependencies_of_source_file(filepath)
                 
                 module_name_2_deps[module_name] = deps
+    
+    if VERBOSE:
+        from pprint import pprint
+        pprint(dict(module_name_2_deps))
     
     with open(output_dot_file_filepath, 'wb') as output:
         print >> output, 'digraph "Module Dependencies" {'

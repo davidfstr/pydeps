@@ -5,4 +5,4 @@
 *.pyc
 
 # Output files
-output.dot
+*.dot
