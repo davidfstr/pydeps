@@ -1,0 +1,8 @@
+# OS X
+.DS_Store
+
+# Python
+*.pyc
+
+# Output files
+output.dot
