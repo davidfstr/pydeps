@@ -6,3 +6,6 @@
 
 # Output files
 *.dot
+
+# Prototypes related to CPM
+cpm_*
