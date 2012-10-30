@@ -14,7 +14,7 @@ The output is a `.dot` file, which can be rendered with [GraphViz].
 
 And marvel as your program's modules and their dependencies become visible:
 
-<img src="docs/sample_output.png" />
+<img src="https://raw.github.com/davidfstr/pydeps/master/docs/sample_output.png" />
 
 ## Output Notes
 
