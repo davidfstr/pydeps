@@ -4,7 +4,7 @@
 Given a directory of Python source files, creates a graph showing which
 modules depend on which other modules.
 
-By default, the graph omits modules that are not in the source file directory.
+The graph omits modules that are not in the source file directory.
 These are assumed to be system modules.
 """
 
@@ -87,7 +87,8 @@ def main(args):
         # Output edges (dependencies)
         for (edge, weight) in edge_2_weight.iteritems():
             (module_name, dep) = edge
-            print >> output, '    "%s" -> "%s" [penwidth=%d]' % (module_name, dep, weight)
+            print >> output, '    "%s" -> "%s" [penwidth=%d]' % \
+                (module_name, dep, weight)
         
         print >> output, '}'
 
