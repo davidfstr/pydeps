@@ -19,24 +19,17 @@ And marvel as your program's modules and their dependencies become visible:
 ## Output Notes
 
 * Nodes are Python modules. Edges are `imports` from one module to another.
-
 * Edge thickness is proportional to the number of imports.
-
     * Therefore the thickness approximates the amount of coupling between adjacent modules.
-
 * Yellow modules contain a main function (via the idiom `if __name__ == 'main':`).
-
     * Since modules with main functions are typically standalone programs or commands,
       it's a good idea to avoid depending on them.
-
 * System modules are excluded from the graph.
-
     * A system module is defined as any module which resides outside the specified source directory.
 
 ## Fun Ideas
 
 * Create an animated history of your program's growth over time:
-
     * Write a program that checks out each revision of your program,
       runs `pydeps.py`, and uses the `dot` tool to generate an image.
 
