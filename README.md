@@ -21,7 +21,7 @@ And marvel as your program's modules and their dependencies become visible:
 * Nodes are Python modules. Edges are `imports` from one module to another.
 * Edge thickness is proportional to the number of imports.
     * Therefore the thickness approximates the amount of coupling between adjacent modules.
-* Yellow modules contain a main function (via the idiom `if __name__ == 'main':`).
+* Yellow modules contain a main function (via the idiom `if __name__ == '__main__':`).
     * Since modules with main functions are typically standalone programs or commands,
       it's a good idea to avoid depending on them.
 * System modules are excluded from the graph.
