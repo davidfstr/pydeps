@@ -30,6 +30,23 @@ And marvel as your program's modules and their dependencies become visible:
 * System modules are excluded from the graph.
     * A system module is defined as any module which resides outside the specified source directory.
 
+## Advanced Usage
+
+A small number of command-line options are also supported:
+
+<table>
+  <tr>
+    <th>Option</th>
+    <th>Description</th>
+    <th>Example</th>
+  </tr>
+  <tr>
+    <td><code>-i, --ignore-modules</code></td>
+    <td>Comma-separated list of modules to omit from the output graph.</td>
+    <td>crystal.xthreading, crystal.xfutures</td>
+  </tr>
+</table>
+
 ## Fun Ideas
 
 * Create an animated history of your program's growth over time:

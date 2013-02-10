@@ -7,5 +7,6 @@
 # Output files
 *.dot
 
-# Prototypes related to CPM
+# Prototypes related to CPM and Crystal
 cpm_*
+viz_*

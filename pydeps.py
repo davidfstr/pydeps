@@ -9,6 +9,7 @@ These are assumed to be system modules.
 """
 
 from collections import OrderedDict
+from optparse import OptionParser
 import os
 import os.path
 import re
@@ -23,8 +24,22 @@ DELAYED_IMPORT_RE = re.compile(                        r'^\W+import ([a-zA-Z_.]+
 DELAYED_FROM_IMPORT_RE = re.compile(r'^\W+from ([a-zA-Z_.]+) import ([a-zA-Z_.]+)')
 MAIN_FUNCTION_MARKER = "if __name__ == '__main__':"
 
-def main(args):
+def main(args_ignored):
+    parser = OptionParser()
+    parser.add_option(
+        "-i", "--ignore-modules",
+        dest="ignore_modules", default="",
+        help="Comma-separated list of modules to omit from the output graph.",
+        metavar="IGNORE")
+    (options, args) = parser.parse_args()
+    
+    # Parse arguments
     (source_directory_dirpath, output_dot_file_filepath) = args
+    
+    # Parse options
+    ignored_module_names = options.ignore_modules.split(',')
+    if ignored_module_names == ['']:
+        ignored_module_names = []
     
     module_name_2_info = OrderedDict()
     for (dirpath, dirnames, filenames) in os.walk(source_directory_dirpath):
@@ -90,6 +105,9 @@ def main(args):
         
         # Output nodes (modules)
         for (module_name, info) in module_name_2_info.iteritems():
+            if module_name in ignored_module_names:
+                continue
+            
             is_empty = info['is_empty']
             if is_empty:
                 # Omit empty modules from the graph
@@ -108,6 +126,9 @@ def main(args):
         # Output edges (dependencies)
         for (edge, weight) in edge_2_weight.iteritems():
             (module_name, dep) = edge
+            
+            if (module_name in ignored_module_names) or (dep in ignored_module_names):
+                continue
             
             has_nondelayed = dep in module_name_2_info[module_name]['deps']
             has_delayed = dep in module_name_2_info[module_name]['delayed_deps']
