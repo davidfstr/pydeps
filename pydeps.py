@@ -50,6 +50,24 @@ def main(args):
     
     module_names = module_name_2_info.keys()
     
+    # Convert relative imports to absolute imports
+    for (module_name, info) in module_name_2_info.iteritems():
+        deps = info['deps']
+        delayed_deps = info['delayed_deps']
+        for rel_dep in deps + delayed_deps:
+            if '.' in module_name:
+                abs_dep = module_name[:module_name.rindex('.')] + '.' + rel_dep
+            else:
+                # abs_dep is the same as rel_dep
+                continue
+            
+            if abs_dep in module_names:
+                # Rewrite rel_dep -> abs_dep
+                deps = info['deps'] = [
+                    abs_dep if dep == rel_dep else dep for dep in deps]
+                delayed_deps = info['delayed_deps'] = [
+                    abs_dep if dep == rel_dep else dep for dep in delayed_deps]
+    
     # Compute edges and count the number of occurrences
     edge_2_weight = OrderedDict()
     for (module_name, info) in module_name_2_info.iteritems():
