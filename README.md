@@ -21,6 +21,9 @@ And marvel as your program's modules and their dependencies become visible:
 * Nodes are Python modules. Edges are `imports` from one module to another.
 * Edge thickness is proportional to the number of imports.
     * Therefore the thickness approximates the amount of coupling between adjacent modules.
+* Dashed edges (*not depicted*) denote an import that is outside the top-level.
+    * Such imports inside functions are typically used when creating a circular dependency.
+    * Conditional imports at the top level are also displayed in this manner.
 * Yellow modules contain a main function (via the idiom `if __name__ == '__main__':`).
     * Since modules with main functions are typically standalone programs or commands,
       it's a good idea to avoid depending on them.

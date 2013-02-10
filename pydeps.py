@@ -17,8 +17,10 @@ import sys
 
 VERBOSE = False
 
-IMPORT_RE = re.compile(r'^import ([a-zA-Z_.]+)')
-FROM_IMPORT_RE = re.compile(r'^from ([a-zA-Z_.]+) import ([a-zA-Z_.]+)')
+IMPORT_RE = re.compile(                                   r'^import ([a-zA-Z_.]+)')
+FROM_IMPORT_RE = re.compile(           r'^from ([a-zA-Z_.]+) import ([a-zA-Z_.]+)')
+DELAYED_IMPORT_RE = re.compile(                        r'^\W+import ([a-zA-Z_.]+)')
+DELAYED_FROM_IMPORT_RE = re.compile(r'^\W+from ([a-zA-Z_.]+) import ([a-zA-Z_.]+)')
 MAIN_FUNCTION_MARKER = "if __name__ == '__main__':"
 
 def main(args):
@@ -52,7 +54,8 @@ def main(args):
     edge_2_weight = OrderedDict()
     for (module_name, info) in module_name_2_info.iteritems():
         deps = info['deps']
-        for dep in deps:
+        delayed_deps = info['delayed_deps']
+        for dep in deps + delayed_deps:
             is_system_dep = dep not in module_names
             if not is_system_dep:
                 edge = (module_name, dep)
@@ -87,14 +90,25 @@ def main(args):
         # Output edges (dependencies)
         for (edge, weight) in edge_2_weight.iteritems():
             (module_name, dep) = edge
-            print >> output, '    "%s" -> "%s" [penwidth=%d]' % \
-                (module_name, dep, weight)
+            
+            has_nondelayed = dep in module_name_2_info[module_name]['deps']
+            has_delayed = dep in module_name_2_info[module_name]['delayed_deps']
+            only_delayed = has_delayed and not has_nondelayed
+            
+            style_suffix = ' [penwidth=%d' % weight
+            if only_delayed:
+                style_suffix += ', style=dashed'
+            style_suffix += ']'
+            
+            print >> output, '    "%s" -> "%s"%s' % \
+                (module_name, dep, style_suffix)
         
         print >> output, '}'
 
 
 def read_source_file(source_filepath):
     deps = []
+    delayed_deps = []
     has_main_function = False
     with open(source_filepath, 'rb') as source_file:
         for line in source_file:
@@ -108,6 +122,14 @@ def read_source_file(source_filepath):
             if matcher is not None:
                 deps.append(matcher.group(1))
             
+            matcher = DELAYED_IMPORT_RE.match(line)
+            if matcher is not None:
+                delayed_deps.append(matcher.group(1))
+            
+            matcher = DELAYED_FROM_IMPORT_RE.match(line)
+            if matcher is not None:
+                delayed_deps.append(matcher.group(1))
+            
             if MAIN_FUNCTION_MARKER in line:
                 has_main_function = True
         
@@ -115,6 +137,7 @@ def read_source_file(source_filepath):
     
     return {
         'deps': deps,
+        'delayed_deps': delayed_deps,
         'has_main_function': has_main_function,
         'is_empty': is_empty,
     }
