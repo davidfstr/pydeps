@@ -18,10 +18,10 @@ import sys
 
 VERBOSE = False
 
-IMPORT_RE = re.compile(                                   r'^import ([a-zA-Z_.]+)')
-FROM_IMPORT_RE = re.compile(           r'^from ([a-zA-Z_.]+) import ([a-zA-Z_.]+|\*)')
-DELAYED_IMPORT_RE = re.compile(                        r'^\W+import ([a-zA-Z_.]+)')
-DELAYED_FROM_IMPORT_RE = re.compile(r'^\W+from ([a-zA-Z_.]+) import ([a-zA-Z_.]+|\*)')
+IMPORT_RE = re.compile(                                      r'^import ([a-zA-Z0-9_.]+)')
+FROM_IMPORT_RE = re.compile(           r'^from ([a-zA-Z0-9_.]+) import ([a-zA-Z0-9_.]+|\*)')
+DELAYED_IMPORT_RE = re.compile(                           r'^\W+import ([a-zA-Z0-9_.]+)')
+DELAYED_FROM_IMPORT_RE = re.compile(r'^\W+from ([a-zA-Z0-9_.]+) import ([a-zA-Z0-9_.]+|\*)')
 MAIN_FUNCTION_MARKER = "if __name__ == '__main__':"
 
 def main(args_ignored):
